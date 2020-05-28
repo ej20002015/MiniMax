@@ -87,8 +87,8 @@ void PlayTicTacToe::playerMove()
 
 void PlayTicTacToe::computerMove()
 {
-  std::vector<AlphaBetaSearch::Options> options;
-  options.push_back(AlphaBetaSearch::Options::USE_TRANSPOSITION_TABLE);
+  std::vector<MiniMaxSearch::Options> options;
+  options.push_back(MiniMaxSearch::Options::USE_TRANSPOSITION_TABLE);
   auto start = std::chrono::high_resolution_clock::now();
   std::shared_ptr<TicTacToeAction> computerMove = std::dynamic_pointer_cast<TicTacToeAction>(search.performSearch(options).action);
   auto finish = std::chrono::high_resolution_clock::now();

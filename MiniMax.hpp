@@ -65,7 +65,7 @@ public:
   virtual ~SearchableGame() = default;
 };
 
-class AlphaBetaSearch
+class MiniMaxSearch
 {
 public:
   enum class Options
@@ -74,7 +74,7 @@ public:
     USE_PRUNING
   };
 
-  AlphaBetaSearch(const std::shared_ptr<SearchableGame>& game) : game(game), player(game->getPlayerFromState(game->getState())), depth(-1), transpositionTable() {}
+  MiniMaxSearch(const std::shared_ptr<SearchableGame>& game) : game(game), player(game->getPlayerFromState(game->getState())), depth(-1), transpositionTable() {}
   ActionValue performSearch();
   ActionValue performSearch(const std::vector<Options>& options);
   ActionValue performSearch(const std::vector<Options>& options, int depth);

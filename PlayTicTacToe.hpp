@@ -19,7 +19,7 @@ public:
 private:
   std::shared_ptr<TicTacToe> ticTacGame;
   std::shared_ptr<SearchableGame> searchableGame;
-  AlphaBetaSearch search;
+  MiniMaxSearch search;
   const PlayPolicy playPolicy;
 
   void playerMove();

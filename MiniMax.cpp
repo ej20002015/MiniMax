@@ -1,4 +1,4 @@
-#include "MiniMaxWithPruning.hpp"
+#include "MiniMax.hpp"
 
 #include <limits.h>
 #include <exception>
@@ -7,24 +7,24 @@
 
 int count = 0;
 
-void AlphaBetaSearch::test()
+void MiniMaxSearch::test()
 {
   //transpositionTable[game->getState()] = 1;
   //std::cout << transpositionTable.at(game->getState()) << std::endl;
 }
 
-ActionValue AlphaBetaSearch::performSearch()
+ActionValue MiniMaxSearch::performSearch()
 { 
   std::vector<Options> options;
   return performSearch(game->getState(), options, -1);
 }
 
-ActionValue AlphaBetaSearch::performSearch(const std::vector<Options>& options)
+ActionValue MiniMaxSearch::performSearch(const std::vector<Options>& options)
 {
   return performSearch(game->getState(), options, -1);
 }
 
-ActionValue AlphaBetaSearch::performSearch(const std::shared_ptr<State>& state, const std::vector<Options>& options, int depth)
+ActionValue MiniMaxSearch::performSearch(const std::shared_ptr<State>& state, const std::vector<Options>& options, int depth)
 {
   player = game->getPlayerFromState(state);
   this->depth = depth;
@@ -35,7 +35,7 @@ ActionValue AlphaBetaSearch::performSearch(const std::shared_ptr<State>& state, 
   return maxValue(state);
 }
 
-ActionValue AlphaBetaSearch::maxValue(const std::shared_ptr<State>& state)
+ActionValue MiniMaxSearch::maxValue(const std::shared_ptr<State>& state)
 {
   if (game->terminalState(state))
     return {nullptr, game->getUtility(state, player)};
@@ -58,7 +58,7 @@ ActionValue AlphaBetaSearch::maxValue(const std::shared_ptr<State>& state)
   return actionValue;
 }
 
-ActionValue AlphaBetaSearch::minValue(const std::shared_ptr<State>& state)
+ActionValue MiniMaxSearch::minValue(const std::shared_ptr<State>& state)
 {
   if (game->terminalState(state))
     return {nullptr, game->getUtility(state, player)};
@@ -80,7 +80,7 @@ ActionValue AlphaBetaSearch::minValue(const std::shared_ptr<State>& state)
   return actionValue;
 }
 
-ActionValue AlphaBetaSearch::maxValueWithTranspositionTable(const std::shared_ptr<State>& state)
+ActionValue MiniMaxSearch::maxValueWithTranspositionTable(const std::shared_ptr<State>& state)
 {
   if (game->terminalState(state))
     return {nullptr, game->getUtility(state, player)};
@@ -110,7 +110,7 @@ ActionValue AlphaBetaSearch::maxValueWithTranspositionTable(const std::shared_pt
   return actionValue;
 }
 
-ActionValue AlphaBetaSearch::minValueWithTranspositionTable(const std::shared_ptr<State>& state)
+ActionValue MiniMaxSearch::minValueWithTranspositionTable(const std::shared_ptr<State>& state)
 {
   if (game->terminalState(state))
     return {nullptr, game->getUtility(state, player)};

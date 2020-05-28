@@ -1,7 +1,7 @@
 #ifndef TIC_TAC_TOE_H_
 #define TIC_TAC_TOE_H_
 
-#include "MiniMaxWithPruning.hpp"
+#include "MiniMax.hpp"
 
 #include <map>
 #include <array>
