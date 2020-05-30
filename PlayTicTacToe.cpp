@@ -89,11 +89,12 @@ void PlayTicTacToe::computerMove()
 {
   std::vector<MiniMaxSearch::Options> options;
   options.push_back(MiniMaxSearch::Options::USE_TRANSPOSITION_TABLE);
+  options.push_back(MiniMaxSearch::Options::USE_PRUNING);
   auto start = std::chrono::high_resolution_clock::now();
   std::shared_ptr<TicTacToeAction> computerMove = std::dynamic_pointer_cast<TicTacToeAction>(search.performSearch(options).action);
   auto finish = std::chrono::high_resolution_clock::now();
   std::chrono::duration<double> elapsed = finish - start;
-  std::cout << "Elapsed time: " << elapsed.count() << " s\n";
+  std::cout << "Elapsed time: " << elapsed.count() << " s" << std::endl;
   std::cout << "Computer moved to: " << computerMove->cell << std::endl;
   ticTacGame->makeMove(computerMove->cell);
   std::cout << *ticTacGame << std::endl;

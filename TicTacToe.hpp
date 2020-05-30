@@ -46,6 +46,7 @@ public:
   Player getPlayerFromState(const std::shared_ptr<State>& state) const override;
   std::shared_ptr<State> getState() const override;
 
+  int getEvaluationValue(const std::shared_ptr<State>& state, const Player& player) const { return getUtility(state, player); };
   void printState(const std::shared_ptr<State>& state) const override;
   void printAction(const std::shared_ptr<Action>& action) const override;
 

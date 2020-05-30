@@ -24,18 +24,12 @@ struct State
 
 struct StateSharedPointerEquality 
 {
-  bool operator()(const std::shared_ptr<State>& lhs, const std::shared_ptr<State>& rhs) const
-  {
-    return *lhs == rhs;
-  }
+  bool operator()(const std::shared_ptr<State>& lhs, const std::shared_ptr<State>& rhs) const { return *lhs == rhs; }
 };
 
 struct StateSharedPointerHash
 {
-  std::size_t operator()(const std::shared_ptr<State>& state) const
-  {
-    return state->getHash();
-  }
+  std::size_t operator()(const std::shared_ptr<State>& state) const { return state->getHash(); }
 };
 
 struct Action
@@ -49,14 +43,20 @@ struct ActionValue
   int value;
 };
 
-//TODO: put limit on size of map
-
 class SearchableGame
 {
 public:
+
+  class NoEvaluationFunctionImplementationException : public std::exception
+  {
+  public:
+    virtual const char* what() const throw() override { return "No evaluation function overridded in the instance of SearchableGame - In order to set a depth to search to, an implementation for getEvaluationFunction() must be provided in the SearchableGame"; }
+  };
+
   virtual std::vector<std::pair<std::shared_ptr<State>, std::shared_ptr<Action>>> successorStates(const std::shared_ptr<State>& state) const = 0;
   virtual bool terminalState(const std::shared_ptr<State>& state) const = 0;
   virtual int getUtility(const std::shared_ptr<State>& state, const Player& player) const = 0;
+  virtual int getEvaluationValue(const std::shared_ptr<State>& state, const Player& player) const { throw NoEvaluationFunctionImplementationException(); }
   virtual Player getPlayerFromState(const std::shared_ptr<State>& state) const = 0;
   virtual std::shared_ptr<State> getState() const = 0;
   virtual void printState(const std::shared_ptr<State>& state) const { std::cout << "State print undefined" << std::endl; }
@@ -74,27 +74,29 @@ public:
     USE_PRUNING
   };
 
-  MiniMaxSearch(const std::shared_ptr<SearchableGame>& game) : game(game), player(game->getPlayerFromState(game->getState())), depth(-1), transpositionTable() {}
+  MiniMaxSearch(const std::shared_ptr<SearchableGame>& game) : game(game), player(game->getPlayerFromState(game->getState())), depthLimit(-1), transpositionTable() {}
   ActionValue performSearch();
-  ActionValue performSearch(const std::vector<Options>& options);
-  ActionValue performSearch(const std::vector<Options>& options, int depth);
+  ActionValue performSearch(const std::shared_ptr<State>& state);
+  ActionValue performSearch(const std::shared_ptr<State>& state, int depth);
   ActionValue performSearch(const std::shared_ptr<State>& state, const std::vector<Options>& options);
   ActionValue performSearch(const std::shared_ptr<State>& state, const std::vector<Options>& options, int depth);
-  void test();
+  ActionValue performSearch(const std::vector<Options>& options);
+  ActionValue performSearch(const std::vector<Options>& options, int depth);
+  ActionValue performSearch(int depth);
 
 private:
   std::shared_ptr<const SearchableGame> game;
   Player player;
-  int depth;
-  std::unordered_map<std::shared_ptr<State>, ActionValue, StateSharedPointerHash, StateSharedPointerEquality> transpositionTable;
-  ActionValue maxValue(const std::shared_ptr<State>& state);
-  ActionValue minValue(const std::shared_ptr<State>& state);
-  ActionValue minValueWithPruning(const std::shared_ptr<State>& state) { return ActionValue(); }
-  ActionValue maxValueWithPruning(const std::shared_ptr<State>& state) { return ActionValue(); }
-  ActionValue maxValueWithTranspositionTable(const std::shared_ptr<State>& state);
-  ActionValue minValueWithTranspositionTable(const std::shared_ptr<State>& state);
-  ActionValue minValueWithTranspositionTableAndPruning(const std::shared_ptr<State>& state) { return ActionValue(); }
-  ActionValue maxValueWithTranspositionTableAndPruning(const std::shared_ptr<State>& state) { return ActionValue(); }
+  int depthLimit;
+  std::unordered_map<std::shared_ptr<State>, int, StateSharedPointerHash, StateSharedPointerEquality> transpositionTable;
+  ActionValue maxValue(const std::shared_ptr<State>& state, int currentDepth);
+  ActionValue minValue(const std::shared_ptr<State>& state, int currentDepth);
+  ActionValue maxValueWithPruning(const std::shared_ptr<State>& state, int alpha, int beta, int currentDepth);
+  ActionValue minValueWithPruning(const std::shared_ptr<State>& state, int alpha, int beta, int currentDepth);
+  ActionValue maxValueWithTranspositionTable(const std::shared_ptr<State>& state, int currentDepth);
+  ActionValue minValueWithTranspositionTable(const std::shared_ptr<State>& state, int currentDepth);
+  ActionValue maxValueWithTranspositionTableAndPruning(const std::shared_ptr<State>& state, int alpha, int beta, int currentDepth);
+  ActionValue minValueWithTranspositionTableAndPruning(const std::shared_ptr<State>& state, int alpha, int beta, int currentDepth);
 };
 
 #endif
