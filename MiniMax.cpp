@@ -34,6 +34,7 @@ ActionValue MiniMaxSearch::performSearch(const std::shared_ptr<State>& state, co
   depthLimit = depth;
   int currentDepth = 0;
   ActionValue actionValue;
+  transpositionTable.clear();
 
   if (std::find(options.begin(), options.end(), Options::USE_TRANSPOSITION_TABLE) != options.end())
   {
